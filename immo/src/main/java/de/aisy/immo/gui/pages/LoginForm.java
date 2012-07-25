@@ -67,6 +67,7 @@ public class LoginForm extends PagePanel {
 
                 ThreadUtil.runDelayed (10, new ThreadUtil.Action() {
                     public void execute() {
+
                         Step.Result result = UserActions.getInstance().login(usernameTextField.getText(), new String(passwordTextField.getPassword()));
 
                         if (result.equals(Step.Result.FAILURE_WRONG_RESPONSE)) {

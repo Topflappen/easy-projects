@@ -1,6 +1,6 @@
 import de.aisy.immo.gui.FrameNavigatorObservable;
-import de.aisy.immo.gui.pages.LoginForm;
 import de.aisy.immo.gui.MainFrameNavigator;
+import de.aisy.immo.gui.pages.LoginForm;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -14,15 +14,16 @@ import java.io.IOException;
  */
 public class Main {
 
+	
     public static void main(String[] args) throws IOException {
 
         SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                MainFrameNavigator mainFrameNavigator = new MainFrameNavigator(800, 600);
-                FrameNavigatorObservable.getInstance().pushPage(LoginForm.getInstance());
-                mainFrameNavigator.setVisible(true);
-            }
-        });
+			public void run() {
+				MainFrameNavigator mainFrameNavigator = new MainFrameNavigator(800, 600);
+				FrameNavigatorObservable.getInstance().pushPage(LoginForm.getInstance());
+				mainFrameNavigator.setVisible(true);
+			}
+		});
 
     }
 
@@ -63,8 +64,14 @@ public class Main {
 
 
 
+*/
 
-    File file = new File("/home/topflappen/Java/lib/htmlunit-2.10/lib");
+
+
+	/*
+    public static void main(String[] args) {
+
+		File file = new File("/home/awiktor/IdeaProjects/easy-projects/immo/lib");
 
         File[] files = file.listFiles();
 
@@ -74,7 +81,7 @@ public class Main {
 
             String filename = child.getName();
 
-            result += "sh /home/topflappen/Programme/Anwendungen/apache-maven-2.2.1/bin/mvn install:install-file -Dfile="
+            result += "sh /home/awiktor/apps/apache-maven-2.2.1/bin/mvn install:install-file -Dfile="
                     +file.getPath()+"/"+filename
                     +" -DgroupId=htmlunit -DartifactId=" +
                     filename.substring(0,filename.lastIndexOf("-"))
@@ -101,6 +108,5 @@ public class Main {
         }
 
         System.out.print(result);
-     */
-
+	}*/
 }

@@ -7,6 +7,7 @@ import de.aisy.immo.controller.actions.InternetActions;
 import de.aisy.immo.controller.internet.step.BaseStep;
 import de.aisy.immo.controller.internet.util.Finder;
 import de.aisy.immo.controller.internet.validator.ObjectOverviewValidator;
+import de.aisy.immo.model.InsertedObjectInfo;
 import de.framework.commons.util.StringUtil;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ import java.util.List;
  * Time: 19:51
  * To change this template use File | Settings | File Templates.
  */
-public class ListObjectsStep extends BaseStep<List<String>> {
+public class ListObjectsStep extends BaseStep<List<InsertedObjectInfo>> {
 
     public ListObjectsStep() {
         super(new ObjectOverviewValidator());
@@ -35,9 +36,9 @@ public class ListObjectsStep extends BaseStep<List<String>> {
     }
 
     @Override
-    protected List<String> produceResult(HtmlPage htmlPage) {
+    protected List<InsertedObjectInfo> produceResult(HtmlPage htmlPage) {
 
-        List<String> result = new ArrayList<String>();
+        List<InsertedObjectInfo> result = new ArrayList<InsertedObjectInfo>();
 
         HtmlElement tableElement = Finder.findIn(htmlPage).byTag("table").filter().byAttributeValue("class", ImmoscoutPageConstants.OBJECTS_TABLE_CLASS_NAME).singleResult();
 
@@ -53,20 +54,17 @@ public class ListObjectsStep extends BaseStep<List<String>> {
 
         List<HtmlElement> trs = Finder.findIn(body).byTag("tr").filter().byAttributeValueStartsWith("id", "headRow").results();
 
-        for(HtmlElement tr: trs) {
+		//is24-am-details
+		List<HtmlElement> detailTrs = Finder.findIn(body).byTag("tr").filter().byAttributeValueStartsWith("id", "details").results();
 
-            /*
-            HtmlElement td = Finder.find(tr).byTag("td").filter().byAttributeValue("colspan", "5").singleResult();
+        for(int i= 0; i<Math.min(trs.size(), detailTrs.size()); i++) {
 
-            if(td == null) {
-                continue;
-            }
+			String title = "";
+			String scoutId = "";
+			String objectId = "";
 
-            HtmlElement div = Finder.find(td).byTag("h4").singleResult();
-
-            if(div == null) {
-                continue;
-            }                                                                                       */
+			HtmlElement tr = trs.get(i);
+			HtmlElement detailTr = detailTrs.get(i);
 
             HtmlElement a = Finder
                     .findIn(tr).byTag("td").filter().byAttributeValue("colspan", "5")
@@ -74,9 +72,35 @@ public class ListObjectsStep extends BaseStep<List<String>> {
                     .findInSingleResult().byTag("a")
                     .singleResult();
 
-            if(a != null) {
-                result.add(StringUtil.ensureNotNull(a.getTextContent()).trim());
+			if(a != null) {
+				title = StringUtil.ensureNotNull(a.getTextContent()).trim();
             }
+
+			HtmlElement idList = Finder
+					.findIn(detailTr).byTag("td").filter().byAttributeValue("colspan", "5")
+					.findInSingleResult().byTag("div").filter().byAttributeValueLike("class", "object-ids")
+					.findInSingleResult().byTag("ul").singleResult();
+
+			if(idList != null) {
+
+				List<HtmlElement> listElements = Finder.findIn(idList).byTag("li").results();
+
+				for(HtmlElement listElement: listElements) {
+
+					String content = StringUtil.ensureNotNull(listElement.getTextContent()).trim();
+
+					if(content.startsWith(ImmoscoutPageConstants.OBJECT_SCOUT_ID_IDENTIFIER)) {
+						scoutId = content.replace(ImmoscoutPageConstants.OBJECT_SCOUT_ID_IDENTIFIER,"");
+					}
+					else if(content.startsWith(ImmoscoutPageConstants.OBJECT_OBJECT_ID_IDENTIFIER)) {
+						objectId = content.replace(ImmoscoutPageConstants.OBJECT_OBJECT_ID_IDENTIFIER,"");
+					}
+				}
+			}
+
+			if(StringUtil.notEmpty(title) && StringUtil.notEmpty(objectId)) {
+				result.add(new InsertedObjectInfo(title, scoutId, objectId));
+			}
         }
 
         return result;

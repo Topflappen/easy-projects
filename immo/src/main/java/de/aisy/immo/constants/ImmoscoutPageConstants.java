@@ -18,6 +18,10 @@ public class ImmoscoutPageConstants {
     public static final String LINK_TO_OBJECTS_ID = "linkboxNormalUserObjectsList";
     public static final String OBJECTS_TABLE_CLASS_NAME = "is24-am";
 
+	public static final String OBJECT_SCOUT_ID_IDENTIFIER = "Scout-ID:";
+	public static final String OBJECT_OBJECT_ID_IDENTIFIER = "Objekt-Nr.:";
+	public static final String OBJECT_GROUP_NUMBER_IDENTIFIER = "Gruppen-Nr.:";
+
     public static final String LOGIN_FAILED_MESSAGE = "E-Mail / Benutzername oder Passwort falsch";
 
 }
